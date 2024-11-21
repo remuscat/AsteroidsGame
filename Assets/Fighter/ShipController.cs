@@ -13,6 +13,8 @@ public class ShipController : MonoBehaviour
 
     private Camera mainCamera; // Reference to the main camera
 
+    public GameObject explosionPrefab;
+
     void Start()
     {
         // Ensure the main camera is assigned properly
@@ -91,4 +93,21 @@ public class ShipController : MonoBehaviour
             isSpacePressed = false; // Reset flag when space is released
         }
     }
+
+    // void OnTriggerEnter2D(Collider2D  other)
+    // {
+    //     if (other.CompareTag("Asteroid"))
+    //     {
+    //         // Logic when the spaceship collides with an asteroid
+    //         Debug.Log("Spaceship collided with an asteroid!");
+    //         // You can destroy the spaceship, reduce health, etc.
+            
+    //         // Destroy the asteroid
+    //         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+    //         Destroy(other.gameObject);
+        
+    //         // Optionally destroy the spaceship or handle spaceship destruction
+    //         // Destroy(gameObject);
+    //     }
+    // }
 }

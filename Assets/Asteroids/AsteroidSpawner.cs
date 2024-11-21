@@ -8,15 +8,21 @@ public class AsteroidSpawner : MonoBehaviour
     public float minSize = 1f;          // Minimum asteroid size
     public float maxSize = 2f;          // Maximum asteroid size
     public float speed = 5f;            // Asteroid movement speed
+    public float minSpawnInterval = 0.5f; // Minimum time between spawns
+    public float maxSpawnInterval = 2f;  // Maximum time between spawns
 
     private float nextSpawnTime;
+    
+    public GameObject explosionPrefab;
 
     void Update()
     {
         if (Time.time > nextSpawnTime)
         {
             SpawnAsteroid();
-            float spawnInterval=Random.Range(0.0f, 5.0f);
+            // Randomize the spawn interval for variety
+            //float spawnInterval = Random.Range(minSpawnInterval, maxSpawnInterval);
+            float spawnInterval=0.1f;
             nextSpawnTime = Time.time + spawnInterval;
         }
     }
@@ -49,7 +55,12 @@ public class AsteroidSpawner : MonoBehaviour
 
         // Add movement script
         AsteroidMovement movement = asteroid.AddComponent<AsteroidMovement>();
+        movement.explosionPrefab = explosionPrefab;
+        
+        
         movement.speed = speed;
+        // Pass the size to the movement script for scaling the explosion
+        movement.explosionScale = new Vector3(randomSize/4, randomSize/4, 1f);
     }
 
 }
