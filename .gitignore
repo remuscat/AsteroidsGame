@@ -1,0 +1,32 @@
+# Ignore Unity-specific files and folders
+[Ll]ibrary/
+[Tt]emp/
+[Tt]arget/
+[Aa]ssets/StreamingAssets/aa/
+[Aa]ssets/Editor/Build/
+[Ll]ogs/
+[Uu]serSettings/
+Build/
+Builds/
+.idea/
+.vscode/
+
+# User-specific files
+*.user
+*.userprefs
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Unity generated
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.pidb
+*.pdb
+*.mdb
