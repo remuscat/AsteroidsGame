@@ -31,4 +31,9 @@ public class BulletMovement : MonoBehaviour
         // Apply the new size to the bullet
         transform.localScale = new Vector3(sizeMultiplier, sizeMultiplier, 1f);
     }
+
+    public float GetBulletSize()
+    {
+        return sizeMultiplier; // Return the bullet's size for calculating damage
+    }
 }
