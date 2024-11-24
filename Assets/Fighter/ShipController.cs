@@ -23,6 +23,9 @@ public class ShipController : MonoBehaviour
     public Canvas healthCanvas; // Reference to the healthCanvas in your scene
     private TextMeshProUGUI healthText; // For UnityEngine.UI.Text
 
+    public GameOverScreen GameOverScreen;
+
+    private int points=100;
     void Start()
     {
         // Ensure the main camera is assigned properly
@@ -114,12 +117,12 @@ public class ShipController : MonoBehaviour
                 // Keep the bullet in front of the ship (follow the ship's position)
                 currentBullet.transform.position = bulletSpawnPoint.position;
             }
-            // else
-            // {
-            //     // If the bullet is destroyed, instantiate a new one
-            //     currentBullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
-            //     currentBullet.GetComponent<BulletMovement>().SetBulletSize(0f); // Reset size
-            // }
+            else
+            {
+                // If the bullet is destroyed, instantiate a new one
+                currentBullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
+                currentBullet.GetComponent<BulletMovement>().SetBulletSize(0f); // Reset size
+            }
         }
 
         // Spacebar being released
@@ -153,6 +156,15 @@ public class ShipController : MonoBehaviour
                     healthText = healthTextObj.GetComponent<TextMeshProUGUI>(); // Use Text
 
                     healthText.text=$"{Mathf.RoundToInt(health)}%";
+                    if (health<=0){
+                        // Optionally destroy the spaceship or handle spaceship destruction
+                        Destroy(gameObject);
+                        GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                        explosion.transform.localScale = new Vector3(asteroidSize, asteroidSize, 0f);
+                        GameOverScreen.Setup(points);
+                    }
+
+                    
                 }
                 else
                 {
