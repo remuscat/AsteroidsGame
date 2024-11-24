@@ -1,4 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+
 
 public class ShipController : MonoBehaviour
 {
@@ -14,6 +18,10 @@ public class ShipController : MonoBehaviour
     private Camera mainCamera; // Reference to the main camera
 
     public GameObject explosionPrefab;
+    public float health;     // Shop health
+
+    public Canvas healthCanvas; // Reference to the healthCanvas in your scene
+    private TextMeshProUGUI healthText; // For UnityEngine.UI.Text
 
     void Start()
     {
@@ -23,6 +31,33 @@ public class ShipController : MonoBehaviour
         if (mainCamera == null)
         {
             Debug.LogError("Main Camera not found! Please ensure there is a camera tagged as 'MainCamera' in the scene.");
+        }
+
+        // Initialize healthText
+        if (healthCanvas != null)
+        {
+            GameObject healthTextObj = healthCanvas.transform.Find("HealthText")?.gameObject;
+            if (healthTextObj != null)
+            {
+                healthText = healthTextObj.GetComponent<TextMeshProUGUI>();
+                if (healthText == null)
+                {
+                    Debug.LogError("HealthText GameObject does not have a TextMeshProUGUI component!");
+                }
+                else
+                {
+                    // Set initial health value
+                    healthText.text = $"{Mathf.RoundToInt(health)}%";
+                }
+            }
+            else
+            {
+                Debug.LogError("HealthText GameObject not found under healthCanvas!");
+            }
+        }
+        else
+        {
+            Debug.LogError("healthCanvas is not assigned in the Inspector!");
         }
     }
 
@@ -79,12 +114,12 @@ public class ShipController : MonoBehaviour
                 // Keep the bullet in front of the ship (follow the ship's position)
                 currentBullet.transform.position = bulletSpawnPoint.position;
             }
-            else
-            {
-                // If the bullet is destroyed, instantiate a new one
-                currentBullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
-                currentBullet.GetComponent<BulletMovement>().SetBulletSize(0f); // Reset size
-            }
+            // else
+            // {
+            //     // If the bullet is destroyed, instantiate a new one
+            //     currentBullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
+            //     currentBullet.GetComponent<BulletMovement>().SetBulletSize(0f); // Reset size
+            // }
         }
 
         // Spacebar being released
@@ -94,20 +129,48 @@ public class ShipController : MonoBehaviour
         }
     }
 
-    // void OnTriggerEnter2D(Collider2D  other)
-    // {
-    //     if (other.CompareTag("Asteroid"))
-    //     {
-    //         // Logic when the spaceship collides with an asteroid
-    //         Debug.Log("Spaceship collided with an asteroid!");
-    //         // You can destroy the spaceship, reduce health, etc.
+    void OnTriggerEnter2D(Collider2D  other)
+    {
+        if (other.CompareTag("Asteroid"))
+        {
+            // Logic when the spaceship collides with an asteroid
+            Debug.Log("Spaceship collided with an asteroid!");
+            // You can destroy the spaceship, reduce health, etc.
+            AsteroidMovement asteroid = other.gameObject.GetComponent<AsteroidMovement>();
+            if (asteroid != null) // Ensure the asteroid has the expected component
+            {
+                float asteroidSize = asteroid.GetAsteroidSize();
+                Debug.Log("Asteroid size: " + asteroidSize);
+                // Reduce health
+                health-=asteroidSize*10f;
+                health = Mathf.Clamp(health, 0f, 100f);
+
+                 // Update health text
+                if (healthText != null)
+                {
+                    // Get the Text component from HealthText GameObject if not already assigned
+                    GameObject healthTextObj = healthCanvas.transform.Find("HealthText").gameObject;
+                    healthText = healthTextObj.GetComponent<TextMeshProUGUI>(); // Use Text
+
+                    healthText.text=$"{Mathf.RoundToInt(health)}%";
+                }
+                else
+                {
+                    Debug.LogError("healthText is null! Make sure it is assigned properly.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Asteroid does not have an AsteroidMovement component!");
+            }
+
             
-    //         // Destroy the asteroid
-    //         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-    //         Destroy(other.gameObject);
+            // // Destroy the asteroid
+            // Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            // Destroy(other.gameObject);
         
-    //         // Optionally destroy the spaceship or handle spaceship destruction
-    //         // Destroy(gameObject);
-    //     }
-    // }
+            // Optionally destroy the spaceship or handle spaceship destruction
+            // Destroy(gameObject);
+        }
+    }
 }

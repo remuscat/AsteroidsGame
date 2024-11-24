@@ -94,4 +94,11 @@ public class AsteroidMovement : MonoBehaviour
 
         Destroy(gameObject); // Destroy the asteroid
     }
+
+    public float GetAsteroidSize()
+    {
+        // Assuming the asteroid's scale is uniform
+        return transform.localScale.x;
+    }
+
 }
